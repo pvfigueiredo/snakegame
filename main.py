@@ -27,7 +27,7 @@ def move_rec(event):
             cobra.insert(0, canvas.create_rectangle(x, y, x + 10, y + 10, fill='blue'))         
 
 def limites(val):
-    return 0 <= val <= 590
+    return 10 <= val <= 580
 
 def drop_comida():
     global comida, xc, yc
@@ -54,8 +54,10 @@ tam = 0
 cobra = []
 cobra.append(canvas.create_rectangle(x, y, x + 10, y + 10, fill='blue'))
 tam += 1
+
 gera_coord_comida()
 comida = canvas.create_rectangle(xc, yc, xc + 10, yc + 10, fill='red')
+
 limite_sup = canvas.create_line(10, 10, 590, 10)
 limite_dir = canvas.create_line(590, 10, 590, 590)
 limite_inf = canvas.create_line(10, 590, 590, 590)
