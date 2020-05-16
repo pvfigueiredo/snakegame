@@ -37,8 +37,8 @@ def drop_comida():
 
 def gera_coord_comida():
     global xc, yc
-    xc = (random.randint(0, 600)//10) * 10
-    yc = (random.randint(0, 600)//10) * 10
+    xc = (random.randint(10, 590)//10) * 10
+    yc = (random.randint(10, 590)//10) * 10
 
     
 
