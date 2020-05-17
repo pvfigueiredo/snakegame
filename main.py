@@ -4,6 +4,13 @@ from tkinter import Tk
 import random
 
 
+WIDTH = 500
+HEIGHT = 400
+x = 150
+y = 200
+pontos = 0
+coord = (0,0)
+
 def get_movimento(key):
     mov = {
         'a': (-10, 0),
@@ -13,21 +20,33 @@ def get_movimento(key):
     }
     return mov.get(key, 0)
 
-def move_rec(event):
-    global x, y, cobra, xc, yc, tam
-    coord = get_movimento(event.char)
-    if limites(x + coord[0]) and limites(y + coord[1]):
+def evento(e):
+    global x, y, coord, cancel
+    coord = get_movimento(e.char)
+    if cancel != None:
+        canvas.after_cancel(cancel)
+    move()
+    
+
+def move():
+    global x, y, cobra, xc, yc, tam, cancel
+    x += coord[0]
+    y += coord[1]    
+    if limites(x, y):        
         if x == xc and y == yc:
             drop_comida()
+            incrementa_score()
             tam += 1
-        else:
-            x += coord[0] 
-            y += coord[1]
+        else:            
             canvas.delete(cobra[tam - 1])
-            cobra.insert(0, canvas.create_rectangle(x, y, x + 10, y + 10, fill='blue'))         
-
-def limites(val):
-    return 10 <= val <= 580
+            cobra.insert(0, canvas.create_rectangle(x, y, x + 10, y + 10, fill='blue'))
+    else:
+        return
+    
+    cancel = canvas.after(75, move)
+    
+def limites(xt, yt):
+    return 10 <= xt <= 290 and 10 <= yt <= 390
 
 def drop_comida():
     global comida, xc, yc
@@ -37,18 +56,25 @@ def drop_comida():
 
 def gera_coord_comida():
     global xc, yc
-    xc = (random.randint(10, 590)//10) * 10
-    yc = (random.randint(10, 590)//10) * 10
+    xc = (random.randint(10, 290)//10) * 10
+    yc = (random.randint(10, 150)//10) * 10
 
-    
+def incrementa_score():
+    global pontos
+    pontos += 100
+    score = canvas.find_withtag('score')
+    canvas.itemconfigure(score, text=f'Pontos: {pontos}', tag='score')
+ 
 
 root = Tk()
 
-WIDTH = HEIGHT = 600
-x = y = 300
-
+cancel = None
 canvas = Canvas(root, width=WIDTH, height=HEIGHT)
 canvas.pack()
+
+canvas.create_text(
+    350, 50, text=f'Pontos: {pontos}', tag='score'
+)
 
 tam = 0
 cobra = []
@@ -58,10 +84,10 @@ tam += 1
 gera_coord_comida()
 comida = canvas.create_rectangle(xc, yc, xc + 10, yc + 10, fill='red')
 
-limite_sup = canvas.create_line(10, 10, 590, 10)
-limite_dir = canvas.create_line(590, 10, 590, 590)
-limite_inf = canvas.create_line(10, 590, 590, 590)
-limite_esq = canvas.create_line(10, 10, 10, 590)
+limite_sup = canvas.create_line(10, 10, 300, 10)
+limite_dir = canvas.create_line(300, 10, 300, 400)
+limite_inf = canvas.create_line(10, 400, 300, 400)
+limite_esq = canvas.create_line(10, 10, 10, 400)
 
-root.bind('<Key>', move_rec)
+root.bind('<Key>', evento)
 mainloop()
